@@ -67,10 +67,25 @@ void loop()
             client.println("HTTP/1.1 200 OK");
             client.println("Content-Type: text/html");
             client.println();
-          
-            if(strncmp(cReadBuffer, "GET /?out=0&status=1", strlen("GET /?out=0&status=1")) == 0)
+            
+            //Encendido de alumbrado
+            if(strncmp(cReadBuffer, "GET /?out=8&status=1", strlen("GET /?out=8&status=1")) == 0)
             {
-    
+                digitalWrite(PIN_ALUMBRADO, LOW);           
+                Serial.print("\nLOW - Encendido\n");
+                client.print("{\"status\" : \"1\" , \"type\" : \"plug\", \"out\" : \"");
+                client.print(PIN_ALUMBRADO);
+                client.print("\"}");
+            }
+            
+            //Apagado de alumbrado
+            if(strncmp(cReadBuffer, "GET /?out=8&status=0", strlen("GET /?out=8&status=0")) == 0)
+            {
+                digitalWrite(PIN_ALUMBRADO, HIGH);           
+                Serial.print("\nHIGH - Apagado\n");
+                client.print("{\"status\" : \"1\" , \"type\" : \"plug\", \"out\" : \"");
+                client.print(PIN_ALUMBRADO);
+                client.print("\"}");
             }
             
              /*
