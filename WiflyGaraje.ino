@@ -10,8 +10,8 @@
 //#include <LiquidCrystal_I2C.h>
 
 //#define SALIDADIG_ON_OFF 2
-//#define ESTADO_ON_OFF 8
-//#define ESTADO_AUTO_MANUAL 9
+#define PIN_PUERTA 7
+#define PIN_ALUMBRADO 8
 #define ADDR_Configuration 0
 //#define SONDATEMP_PIN 0
 
