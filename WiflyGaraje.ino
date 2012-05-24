@@ -6,14 +6,17 @@
 #include "WiFly.h"
 #include <EEPROM.h>
 #include "EEPROMAnything.h"
-//#include <Wire.h>
-//#include <LiquidCrystal_I2C.h>
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
 
-//#define SALIDADIG_ON_OFF 2
+
+LiquidCrystal_I2C lcd(0x27,16,2);  // set the LCD address to 0x27 for a 16 chars and 2 line display
+
+
 #define PIN_PUERTA 7
 #define PIN_ALUMBRADO 8
 #define ADDR_Configuration 0
-//#define SONDATEMP_PIN 0
+
 
 
 Server server(80);
@@ -26,17 +29,26 @@ void setup()
 {   
     Serial.begin(9600);
     Serial.println("Setting up");
-  
+    
+    // initialize the lcd
+    lcd.init();   
+    
+    // Print a message to the LCD.
+    lcd.backlight(); //Activa la retroiluminacion
+    lcd.print("Starting...");
+      
     //WiFly.begin();
     WiFly.beginNoDHCP();
 
-    Serial.print("IP: ");
-    Serial.println(WiFly.ip());
+    lcd.clear();
+    lcd.print("Conectado con IP");
+    lcd.setCursor(0, 1);
+    lcd.print(WiFly.ip());
   
     //Serial.print("Time: ");
     //Serial.println(WiFly.GetTime());
 
-    server.begin();
+    server.begin();  
 }
 
 void loop() 
