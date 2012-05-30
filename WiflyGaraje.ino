@@ -14,8 +14,9 @@ LiquidCrystal_I2C lcd(0x27,16,2);  // set the LCD address to 0x27 for a 16 chars
 
 
 
-#define PIN_ALUMBRADO 8
-#define PIN_PUERTA 9
+#define PIN_ALUMBRADO 7
+#define PIN_APERTURA_PUERTA 8
+#define PIN_CERRADO_PUERTA 9
 #define ADDR_Configuration 0
 
 
@@ -40,8 +41,10 @@ void setup()
     
     pinMode(PIN_ALUMBRADO, OUTPUT);
     digitalWrite(PIN_ALUMBRADO, HIGH);
-    pinMode(PIN_PUERTA, OUTPUT);
-    digitalWrite(PIN_PUERTA, HIGH);
+    pinMode(PIN_APERTURA_PUERTA, OUTPUT);
+    digitalWrite(PIN_APERTURA_PUERTA, HIGH);
+    pinMode(PIN_CERRADO_PUERTA, OUTPUT);
+    digitalWrite(PIN_CERRADO_PUERTA, HIGH);
       
     //WiFly.begin();
     WiFly.beginNoDHCP();
@@ -93,7 +96,7 @@ void loop()
             client.println();
             
             //Encendido de alumbrado
-            if(strncmp(cReadBuffer, "GET /?out=8&status=1", strlen("GET /?out=8&status=1")) == 0)
+            if(strncmp(cReadBuffer, "GET /?out=7&status=1", strlen("GET /?out=7&status=1")) == 0)
             {
                 digitalWrite(PIN_ALUMBRADO, LOW);           
                 Serial.print("\nLOW - Encendido\n");
@@ -103,55 +106,77 @@ void loop()
             }
             
             //Apagado de alumbrado
-            if(strncmp(cReadBuffer, "GET /?out=8&status=0", strlen("GET /?out=8&status=0")) == 0)
+            if(strncmp(cReadBuffer, "GET /?out=7&status=0", strlen("GET /?out=7&status=0")) == 0)
             {
                 digitalWrite(PIN_ALUMBRADO, HIGH);           
                 Serial.print("\nHIGH - Apagado\n");
-                client.print("{\"status\" : \"1\" , \"type\" : \"plug\", \"out\" : \"");
+                client.print("{\"status\" : \"0\" , \"type\" : \"plug\", \"out\" : \"");
                 client.print(PIN_ALUMBRADO);
                 client.print("\"}");
             }
             
-             /*
+            //Apertura de la puerta
+            if(strncmp(cReadBuffer, "GET /?out=8&status=1", strlen("GET /?out=8&status=1")) == 0)
+            {
+                digitalWrite(PIN_APERTURA_PUERTA, LOW);           
+                Serial.print("\nLOW - Encendido\n");
+                client.print("{\"status\" : \"1\" , \"type\" : \"plug\", \"out\" : \"");
+                client.print(PIN_APERTURA_PUERTA);
+                client.print("\"}");
+            }
+            
+            //Paro de apertura de la puerta
+            if(strncmp(cReadBuffer, "GET /?out=8&status=0", strlen("GET /?out=8&status=0")) == 0)
+            {
+                digitalWrite(PIN_APERTURA_PUERTA, HIGH);           
+                Serial.print("\nHIGH - Apagado\n");
+                client.print("{\"status\" : \"0\" , \"type\" : \"plug\", \"out\" : \"");
+                client.print(PIN_APERTURA_PUERTA);
+                client.print("\"}");
+            }
+            
+            //Cerrado de la puerta
+            if(strncmp(cReadBuffer, "GET /?out=9&status=1", strlen("GET /?out=9&status=1")) == 0)
+            {
+                digitalWrite(PIN_CERRADO_PUERTA, LOW);           
+                Serial.print("\nLOW - Encendido\n");
+                client.print("{\"status\" : \"1\" , \"type\" : \"plug\", \"out\" : \"");
+                client.print(PIN_CERRADO_PUERTA);
+                client.print("\"}");
+            }
+            
+            //Paro de cerrado de la puerta
+            if(strncmp(cReadBuffer, "GET /?out=9&status=0", strlen("GET /?out=9&status=0")) == 0)
+            {
+                digitalWrite(PIN_CERRADO_PUERTA, HIGH);           
+                Serial.print("\nHIGH - Apagado\n");
+                client.print("{\"status\" : \"0\" , \"type\" : \"plug\", \"out\" : \"");
+                client.print(PIN_CERRADO_PUERTA);
+                client.print("\"}");
+            }
+            
+             
             if(strncmp(cReadBuffer, "GET /?out=all", strlen("GET /?out=all")) == 0)
             {
                 //Serial.print("\n OUT ALL\n");
                 
-                client.print("{\"nombre\" : \"Calefaccion\", ");
+                client.print("{\"nombre\" : \"Garaje\", ");
                 client.print("\"tipo\" : \"WiFi\", ");
-                client.print("\"ubicacion\" : \"Bodega\", ");
-                client.print("\"ip\" : \"192.168.0.110\", ");
+                client.print("\"ubicacion\" : \"Garaje\", ");
+                client.print("\"ip\" : \"192.168.0.111\", ");
                 client.print("\"devices\" : ");
-                client.print("[{ \"type\" : \"time\", \"name\" : \"Hora\", \"out\" : \"");
-                client.print("15");
+                client.print("[{ \"type\" : \"plug\", \"name\" : \"Alumbrado\", \"out\" : \"");
+                client.print(PIN_ALUMBRADO);
                 client.print("\"}");
-                client.print(",{ \"type\" : \"text\", \"name\" : \"Auto/Manual\", \"out\" : \"");
-                client.print("16");
+                client.print(",{ \"type\" : \"plug\", \"name\" : \"Abrir puerta\", \"out\" : \"");
+                client.print(PIN_APERTURA_PUERTA);
                 client.print("\"}");
-                client.print(",{ \"type\" : \"text\", \"name\" : \"Auto/Manual\", \"out\" : \"");
-                client.print("17");
-                client.print("\"}");
-                client.print(",{ \"type\" : \"set\", \"name\" : \"Hora Inicio\", \"out\" : \"");
-                client.print("18");
-                client.print("\"}");
-                client.print(",{ \"type\" : \"set\", \"name\" : \"Hora Fin\", \"out\" : \"");
-                client.print("19");
-                client.print("\"}");
-                client.print(",{ \"type\" : \"time\", \"name\" : \"Hora Inicio\", \"out\" : \"");
-                client.print("20");
-                client.print("\"}");
-                client.print(",{ \"type\" : \"time\", \"name\" : \"Hora Fin\", \"out\" : \"");
-                client.print("21");
-                client.print("\"}");
-                //client.print(",{ \"type\" : \"text\", \"name\" : \"Estado\", \"out\" : \"");
-                client.print("1");
-                client.print("\"}");         
-                //client.print(",{ \"type\" : \"plug\", \"name\" : \"ON/OFF\", \"out\" : \"");
-                client.print("2");
+                client.print(",{ \"type\" : \"plug\", \"name\" : \"Cerrar puerta\", \"out\" : \"");
+                client.print(PIN_CERRADO_PUERTA);
                 client.print("\"}");
                 client.print("]}");
             }
-            */
+            
           
             //delay(5);
             iIndex = 0;
