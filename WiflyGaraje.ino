@@ -13,8 +13,9 @@
 LiquidCrystal_I2C lcd(0x27,16,2);  // set the LCD address to 0x27 for a 16 chars and 2 line display
 
 
-#define PIN_PUERTA 7
+
 #define PIN_ALUMBRADO 8
+#define PIN_PUERTA 9
 #define ADDR_Configuration 0
 
 
@@ -36,17 +37,28 @@ void setup()
     // Print a message to the LCD.
     lcd.backlight(); //Activa la retroiluminacion
     lcd.print("Starting...");
+    
+    pinMode(PIN_ALUMBRADO, OUTPUT);
+    digitalWrite(PIN_ALUMBRADO, HIGH);
+    pinMode(PIN_PUERTA, OUTPUT);
+    digitalWrite(PIN_PUERTA, HIGH);
       
     //WiFly.begin();
     WiFly.beginNoDHCP();
-
+  
+    delay(3000);
+  
+    lcd.clear();
+    lcd.print("Hora:");
+    lcd.setCursor(0, 1);
+    lcd.print(WiFly.GetTime());
+    
+    delay(2000);
+    
     lcd.clear();
     lcd.print("Conectado con IP");
     lcd.setCursor(0, 1);
     lcd.print(WiFly.ip());
-  
-    //Serial.print("Time: ");
-    //Serial.println(WiFly.GetTime());
 
     server.begin();  
 }
