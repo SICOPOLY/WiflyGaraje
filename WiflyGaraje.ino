@@ -117,11 +117,6 @@ void loop()
                 client.print("{\"status\" : \"1\" , \"type\" : \"plug\", \"out\" : \"");
                 client.print(PIN_ALUMBRADO);
                 client.print("\"}");
-                lcd.backlight();
-                lcd.clear();
-                lcd.print("Conectado:  "); 
-                lcd.print(WiFly.GetSignalQuality());
-                //delay(2000);
             }
             
             //Apagado de alumbrado
